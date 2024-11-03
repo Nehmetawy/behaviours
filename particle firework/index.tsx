@@ -1,4 +1,4 @@
-import p5 from 'p5';
+import p5 from "p5";
 
 const CENTER_W = 400;
 const CENTER_H = 400;
@@ -31,12 +31,19 @@ export class Manager {
 class Particles {
   pos: p5.Vector;
   vel: p5.Vector;
-
+  origin: p5.Vector;
+  color: p5.Color;
   constructor(p: p5) {
     this.pos = p.createVector(CENTER_W, CENTER_H);
-    const vy = (-1 * p.random(0, 100)) / 100;
-    const vx = (-1 * p.random(0, 100)) / 100;
+    const vy = p.random(-100, 100) / 50;
+    const vx = p.random(-100, 100) / 50;
     this.vel = p.createVector(vx, vy);
+    this.origin = p.createVector(CENTER_W, CENTER_H);
+    this.color = p.color(
+      p.random(0, 255) % 256,
+      p.random(0, 255) % 256,
+      p.random(0, 255) % 256
+    );
   }
 
   animate(p5: p5) {
@@ -44,8 +51,16 @@ class Particles {
     this.draw(p5);
     // update the particle
     this.update(p5);
+    // calculate distance and reset
+    this.reset();
   }
+  reset() {
+    const distance = this.origin.dist(this.pos);
+    if (distance > 150) this.pos.set(this.origin);
+  }
+
   draw(p5: p5) {
+    p5.stroke(this.color);
     p5.point(this.pos);
   }
   update(p5: p5) {
